@@ -42,17 +42,18 @@ function startInterval() {
         console.log(chalk.hex("99754f")("  Program  :  ") + chalk.hex("c8b6a3")("MasterGamers#8449"));
         console.log(chalk.hex("99754f")("  Theme    :  ") + chalk.hex("c8b6a3")("doot#0002"));
         console.log(chalk.hex("c8b6a3")("  -------"));
-        console.log(chalk.hex("99754f")("  STATUS    :  ") + chalk.hex("c8b6a3")(currentStatus));
-        console.log(chalk.hex("99754f")("  Total Buys    :  ") + chalk.hex("c8b6a3")(totalBuys));
-        console.log(chalk.hex("99754f")("  Total Ratelimits    :  ") + chalk.hex("c8b6a3")(totalRatelimits));
+        console.log(chalk.hex("99754f")("  Status  :  ") + chalk.hex("c8b6a3")(currentStatus));
+        console.log(chalk.hex("99754f")("  Buys    :  ") + chalk.hex("c8b6a3")(totalBuys));
+        console.log(chalk.hex("99754f")("  Limits  :  ") + chalk.hex("c8b6a3")(totalRatelimits));
         if (config.proxyEnabled) {
             console.log(chalk.hex("c8b6a3")("  -------"));
             console.log(chalk.hex("99754f")("  Switched Proxies    :  ") + chalk.hex("c8b6a3")(totalProxySwitchs));
             console.log(chalk.hex("99754f")("  Current Proxy    :  ") + chalk.hex("c8b6a3")(currentProxy));
             console.log(chalk.hex("c8b6a3")("  -------"));
         }
-        console.log(chalk.hex("99754f")("  Current Task    :  ") + chalk.hex("c8b6a3")(currentTask));
-        console.log(chalk.hex("99754f")("  Error    :  ") + chalk.hex("cc0000")(errorDisplayed));
+        console.log(chalk.hex("99754f")("  Task    :  ") + chalk.hex("c8b6a3")(currentTask));
+        console.log(chalk.hex("99754f")("  ERROR   :  ") + chalk.hex("cc0000")(errorDisplayed));
+        console.log(chalk.hex("c8b6a3")("  -------"));
         sleep(0);
     }, 350);
 }
@@ -182,7 +183,7 @@ function sleep(time) {
                             if (config.proxyEnabled) {
                                 switchProxy();
                             }
-                            sleep(50);
+                            sleep(250);
                             return;
                         }
                         if (err.statusCode == 403) {
