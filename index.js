@@ -126,7 +126,6 @@ function sleep(time) {
     const itemId = config.itemId;
     if (!itemId) {
         errorDisplayed = "There isnt a itemId to snipe, cannot proceed.";
-        clearInterval(infoInterval);
         return;
     }
     currentTask = "Getting X-CSRF-TOKEN...";
