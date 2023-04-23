@@ -22,6 +22,8 @@ var totalProxySwitchs = 0;
 var errorDisplayed = "";
 var currentTask = "";
 
+var infoInterval = "";
+
 var asciiArt = `\n\n                             ██████╗ █████╗ ███████╗███████╗███████╗██╗███╗   ██╗███████╗
                             ██╔════╝██╔══██╗██╔════╝██╔════╝██╔════╝██║████╗  ██║██╔════╝
                             ██║     ███████║█████╗  █████╗  █████╗  ██║██╔██╗ ██║█████╗  
@@ -31,6 +33,29 @@ var asciiArt = `\n\n                             ██████╗ ███
                                           > A Roblox UGC Limited Sniper. <
           
 `;
+
+function startInterval() {
+    infoInterval = setInterval(()=>{
+        console.clear();
+        console.log(gradient("#99754f","#c8b6a3")(asciiArt));
+        console.log(chalk.hex("c8b6a3")("  -------"));
+        console.log(chalk.hex("99754f")("  Program  :  ") + chalk.hex("c8b6a3")("MasterGamers#8449"));
+        console.log(chalk.hex("99754f")("  Theme    :  ") + chalk.hex("c8b6a3")("doot#0002"));
+        console.log(chalk.hex("c8b6a3")("  -------"));
+        console.log(chalk.hex("99754f")("  STATUS    :  ") + chalk.hex("c8b6a3")(currentStatus));
+        console.log(chalk.hex("99754f")("  Total Buys    :  ") + chalk.hex("c8b6a3")(totalBuys));
+        console.log(chalk.hex("99754f")("  Total Ratelimits    :  ") + chalk.hex("c8b6a3")(totalRatelimits));
+        if (config.proxyEnabled) {
+            console.log(chalk.hex("c8b6a3")("  -------"));
+            console.log(chalk.hex("99754f")("  Switched Proxies    :  ") + chalk.hex("c8b6a3")(totalProxySwitchs));
+            console.log(chalk.hex("99754f")("  Current Proxy    :  ") + chalk.hex("c8b6a3")(currentProxy));
+            console.log(chalk.hex("c8b6a3")("  -------"));
+        }
+        console.log(chalk.hex("99754f")("  Current Task    :  ") + chalk.hex("c8b6a3")(currentTask));
+        console.log(chalk.hex("99754f")("  Error    :  ") + chalk.hex("cc0000")(errorDisplayed));
+        sleep(0);
+    }, 350);
+}
 
 function switchProxy() {
     if (currentIndex == totalIndex) {
@@ -84,32 +109,20 @@ function sleep(time) {
         console.log(currentProxy);
         console.log({totalIndex});
     }
-    const infoInterval = setInterval(()=>{
-        console.clear();
-        console.log(gradient("#99754f","#c8b6a3")(asciiArt));
-        console.log(chalk.hex("c8b6a3")("  -------"));
-        console.log(chalk.hex("99754f")("  Program  :  ") + chalk.hex("c8b6a3")("MasterGamers#8449"));
-        console.log(chalk.hex("99754f")("  Theme    :  ") + chalk.hex("c8b6a3")("doot#0002"));
-        console.log(chalk.hex("c8b6a3")("  -------"));
-        console.log(chalk.hex("99754f")("  Total Buys    :  ") + chalk.hex("c8b6a3")(totalBuys));
-        console.log(chalk.hex("99754f")("  Total Ratelimits    :  ") + chalk.hex("c8b6a3")(totalRatelimits));
-        if (config.proxyEnabled) {
-            console.log(chalk.hex("99754f")("  Switched Proxies    :  ") + chalk.hex("c8b6a3")(totalProxySwitchs));
-            console.log(chalk.hex("99754f")("  Current Proxy    :  ") + chalk.hex("c8b6a3")(currentProxy));
-        }
-        console.log(chalk.hex("99754f")("  Current Task    :  ") + chalk.hex("c8b6a3")(currentTask));
-        console.log(chalk.hex("99754f")("  Error    :  ") + chalk.hex("cc0000")(errorDisplayed));
-        sleep(0);
-    }, 350);
-    currentTask = "Logging in...";
-    const userInfo = await helpers.fetchUserInfo(config.cookie)
-    .catch(()=>{
-        errorDisplayed = "Cookie is invalid.";
-        clearInterval(infoInterval);
-        process.exit();
-    })
-    userId = userInfo[0];
-    username = userInfo[1];
+    startInterval();
+    currentStatus = "Logging in...";
+    //we handle cookie invalid error
+    try {
+        const userInfo = await helpers.fetchUserInfo(config.cookie)
+        .then(()=>{
+            userId = userInfo[0];
+            username = userInfo[1];
+            currentStatus = `Logged in as ${username} ID: ${userId}.`;
+        })
+    } catch(err) {
+        errorDisplayed = "Cookie is invalid, PUT A VALID COOKIE AND RESTART";
+        return;
+    }
     const itemId = config.itemId;
     if (!itemId) {
         errorDisplayed = "There isnt a itemId to snipe, cannot proceed.";
