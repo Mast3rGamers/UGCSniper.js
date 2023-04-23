@@ -166,6 +166,16 @@ function sleep(time) {
                 }
                 const buyInterval = setInterval(async ()=>{
                     try {
+                        if (config.proxyEnabled) {
+                            try {
+                                const proxyToken = await helpers.getXCSRFToken(config.cookie, currentProxy)
+                                token = proxyToken;
+                            } catch (err) {
+                                errorDisplayed = "PROXY ERROR, SWITCHING PROXY...";
+                                switchProxy();
+                                errorDisplayed = "";
+                            }
+                        }
                         const buyResponse = await helpers.buyItem(config.cookie, token, userId, itemDetails[0].creatorTargetId, itemId, productId, config.proxyEnabled ? currentProxy : "");
                         if (buyResponse.purchased) {
                             totalBuys += 1;
