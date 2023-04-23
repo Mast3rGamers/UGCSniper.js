@@ -1,12 +1,6 @@
 const request = require("request-promise");
 const uuid = require("uuid");
 
-const config = require("../config.json");
-
-function generateUUID() {
-    return uuid.v4();
-}
-
 module.exports = {
     //User details helpers.
     fetchUserInfo: function(cookie, proxy) {
@@ -160,7 +154,7 @@ module.exports = {
             options.proxy = `http://${proxy}`;
         }
         return new Promise((resolve, reject)=>{
-            data.idempotencyKey = generateUUID();
+            data.idempotencyKey = uuid.v4();
             request(options)
             .then((res)=>{
                 resolve(res);
