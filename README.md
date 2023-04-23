@@ -22,6 +22,9 @@ You can enable proxies by switching "false" to "true", make sure to get proxies,
 ### Step 5:
 Now head to "START SNIPER" and use it.
 
+# Support
+Feel free to join our [discord server](https://discord.gg/QppnTzQRzM)!
+
 # Contributors
 * MasterGamers : Creator of this program.
 * doot : Stats theme.
