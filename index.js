@@ -114,15 +114,14 @@ function sleep(time) {
     //we handle cookie invalid error
     try {
         const userInfo = await helpers.fetchUserInfo(config.cookie)
-        .then(()=>{
-            userId = userInfo[0];
-            username = userInfo[1];
-            currentStatus = `Logged in as ${username} ID: ${userId}.`;
-        })
+        userId = userInfo[0];
+        username = userInfo[1];
     } catch(err) {
-        errorDisplayed = "Cookie is invalid, PUT A VALID COOKIE AND RESTART";
+        errorDisplayed = "Invalid cookie, put a valid cookie and restart.";
+        currentStatus = "";
         return;
     }
+    currentStatus = `Logged in as ${username} ID: ${userId}.`;
     const itemId = config.itemId;
     if (!itemId) {
         errorDisplayed = "There isnt a itemId to snipe, cannot proceed.";
