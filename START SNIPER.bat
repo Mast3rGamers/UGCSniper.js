@@ -1,0 +1,2 @@
+node .
+cmd /k
