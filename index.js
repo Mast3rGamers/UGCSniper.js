@@ -123,7 +123,7 @@ function sleep(time) {
         currentStatus = "";
         return;
     }
-    currentStatus = `Logged in as ${username} ID: ${userId}.`;
+    currentStatus = `Logged in as ${username} || ID: ${userId}.`;
     const itemId = config.itemId;
     if (!itemId) {
         errorDisplayed = "There isnt a itemId to snipe, cannot proceed.";
