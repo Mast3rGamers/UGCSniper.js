@@ -164,48 +164,6 @@ function sleep(time) {
                 } else {
                     productId = await helpers.getProductId(config.cookie, token, itemDetails[0].collectibleItemId, config.proxyEnabled ? currentProxy : "");
                 }
-                const buyInterval = setInterval(async ()=>{
-                    try {
-                        if (config.proxyEnabled) {
-                            try {
-                                const proxyToken = await helpers.getXCSRFToken(config.cookie, currentProxy)
-                                token = proxyToken;
-                            } catch (err) {
-                                errorDisplayed = "PROXY ERROR, SWITCHING PROXY...";
-                                switchProxy();
-                                errorDisplayed = "";
-                            }
-                        }
-                        const buyResponse = await helpers.buyItem(config.cookie, token, userId, itemDetails[0].creatorTargetId, itemId, productId, config.proxyEnabled ? currentProxy : "");
-                        if (buyResponse.purchased) {
-                            totalBuys += 1;
-                        }
-                        const newDetails = await helpers.getItemDetails(config.cookie, token, itemId, config.proxyEnabled ? currentProxy : "")
-                        if (newDetails[0].unitsAvailableForConsumption == 0) {
-                            currentTask = "ITEM IS OUT OF STOCK";
-                            clearInterval(buyInterval);
-                            clearInterval(infoInterval);
-                            console.log("SNIPING FINISHED");
-                            process.exit();
-                        }
-                    } catch(err) {
-                        if (err.statusCode == 429) {
-                            totalRatelimits += 1;
-                            if (config.proxyEnabled) {
-                                switchProxy();
-                            }
-                            sleep(250);
-                            return;
-                        }
-                        if (err.statusCode == 403) {
-                            errorDisplayed = "PURCHASE FAILED.";
-                            return;
-                        }
-                        if (config.proxyEnabled) {
-                            switchProxy();
-                        }
-                    }
-                }, 100)
                 break;
             }
             sleep(240);
@@ -229,6 +187,47 @@ function sleep(time) {
                     console.log(err);
                     process.exit();
                 })
+            }
+            if (config.proxyEnabled) {
+                switchProxy();
+            }
+        }
+    }
+    while (productId) {
+        try {
+            if (config.proxyEnabled) {
+                try {
+                    const proxyToken = await helpers.getXCSRFToken(config.cookie, currentProxy)
+                    token = proxyToken;
+                } catch (err) {
+                    errorDisplayed = "PROXY ERROR, SWITCHING PROXY...";
+                    switchProxy();
+                    errorDisplayed = "";
+                }
+            }
+            const buyResponse = await helpers.buyItem(config.cookie, token, userId, itemDetails[0].creatorTargetId, itemDetails[0].collectibleItemId, productId, config.proxyEnabled ? currentProxy : "");
+            if (buyResponse.purchased) {
+                totalBuys += 1;
+            }
+            if (buyResponse.purchaseResult == "Flooded") {
+                errorDisplayed = "BOUGHT THE MAX AMOUNT. (4)";
+            }
+            if (buyResponse.errorMessage == "QuantityExhausted") {
+                errorDisplayed = "ITEM IS OUT OF STOCK";
+                currentStatus = "SNIPING FINISHED.";
+                break;
+            }
+        } catch(err) {
+            if (err.statusCode == 429) {
+                totalRatelimits += 1;
+                if (config.proxyEnabled) {
+                    switchProxy();
+                }
+                return;
+            }
+            if (err.statusCode == 403) {
+                errorDisplayed = "PURCHASE FAILED.";
+                return;
             }
             if (config.proxyEnabled) {
                 switchProxy();
