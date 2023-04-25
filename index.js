@@ -21,6 +21,7 @@ var totalBuys = 0;
 var totalProxySwitchs = 0;
 var errorDisplayed = "";
 var currentTask = "";
+var currentChecks = 0;
 
 var infoInterval = "";
 
@@ -44,6 +45,7 @@ function startInterval() {
         console.log(chalk.hex("99754f")("  Theme    :  ") + chalk.hex("c8b6a3")("doot#0002"));
         console.log(chalk.hex("c8b6a3")("  -------"));
         console.log(chalk.hex("99754f")("  Status  :  ") + chalk.hex("c8b6a3")(currentStatus));
+        console.log(chalk.hex("99754f")("  Checks  :  ") + chalk.hex("c8b6a3")(currentChecks));
         console.log(chalk.hex("99754f")("  Buys    :  ") + chalk.hex("c8b6a3")(totalBuys));
         console.log(chalk.hex("99754f")("  Limits  :  ") + chalk.hex("c8b6a3")(totalRatelimits));
         if (config.proxyEnabled) {
@@ -166,6 +168,7 @@ function sleep(time) {
                 }
                 break;
             }
+            currentChecks += 1;
             sleep(240);
         } catch(err) {
             if (err.statusCode = 429) {
