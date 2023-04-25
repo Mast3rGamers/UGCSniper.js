@@ -158,6 +158,7 @@ function sleep(time) {
                     errorDisplayed = "";
                 }
             }
+            currentChecks += 1;
             var itemDetails = await helpers.getItemDetails(config.cookie, token, itemId, config.proxyEnabled ? currentProxy : "");
             if (itemDetails[0].collectibleItemId || itemDetails[0].productId) {
                 currentTask = "Attempting purchase...";
@@ -168,8 +169,7 @@ function sleep(time) {
                 }
                 break;
             }
-            currentChecks += 1;
-            sleep(240);
+            sleep(50);
         } catch(err) {
             if (err.statusCode = 429) {
                 totalRatelimits += 1;
