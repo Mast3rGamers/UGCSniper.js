@@ -136,7 +136,7 @@ module.exports = {
             "expectedPurchaserType": "User",
             "expectedSellerId": creatorId,
             "expectedSellerType": "User",
-            "idempotencyKey": "the uuid goes here",
+            "idempotencyKey": uuid.v4(),
             "collectibleProductId": productId
         }
         options = {
@@ -154,7 +154,6 @@ module.exports = {
             options.proxy = `http://${proxy}`;
         }
         return new Promise((resolve, reject)=>{
-            data.idempotencyKey = uuid.v4();
             request(options)
             .then((res)=>{
                 resolve(res);
