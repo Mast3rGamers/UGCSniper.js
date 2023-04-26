@@ -3,20 +3,16 @@ const uuid = require("uuid");
 
 module.exports = {
     //User details helpers.
-    fetchUserInfo: function(cookie, proxy) {
+    fetchUserInfo: function(cookie) {
         if (!cookie) return;
         var options = {
             uri: "https://www.roblox.com/mobileapi/userinfo",
             method: "GET",
             json: true,
             followRedirect: false,
-            proxy: "",
             headers: {
                 "Cookie": `.ROBLOSECURITY=${cookie}`
             }
-        }
-        if (proxy) {
-            options.proxy = `http://${proxy}`;
         }
         return new Promise((resolve, reject)=>{
             request(options)
@@ -24,9 +20,6 @@ module.exports = {
                 resolve([res["UserID"], res["UserName"]]);
             })
             .catch((err)=>{
-                if (err.code == "ECONNRESET") {
-                    reject(err.code);
-                }
                 reject(err);
             })
         })
