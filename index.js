@@ -137,6 +137,9 @@ function sleep(time) {
         try {
             const xToken = await helpers.getXCSRFToken(config.cookie, config.proxyEnabled ? currentProxy : "")
             token = xToken;
+            if (typeof token == "undefined") {
+              throw new Error("undefined");
+            }  
         } catch(err) {
             if (config.proxyEnabled) {
                 switchProxy();
@@ -159,6 +162,9 @@ function sleep(time) {
                 try {
                     const proxyToken = await helpers.getXCSRFToken(config.cookie, currentProxy)
                     token = proxyToken;
+                    if (typeof token == "undefined") {
+                      throw new Error("undefined");
+                    }  
                     gotProxyToken = true;
                 } catch (err) {
                     errorDisplayed = "PROXY ERROR, SWITCHING PROXY...";
@@ -182,9 +188,10 @@ function sleep(time) {
             if (err.statusCode = 429) {
                 totalRatelimits += 1;
                 if (config.proxyEnabled) {
+                    gotProxyToken = false;
                     switchProxy();
                 }
-                sleep(240);
+                sleep(sleepTime);
             }
             if (err.statusCode == 403 && err.error.message == "Token Verification Failed") {
                 errorDisplayed = "TOKEN EXPIRED, GETTING NEW TOKEN...";
@@ -210,6 +217,9 @@ function sleep(time) {
                 try {
                     const proxyToken = await helpers.getXCSRFToken(config.cookie, currentProxy)
                     token = proxyToken;
+                    if (typeof token == "undefined") {
+                      throw new Error("undefined");
+                    }
                     gotProxyToken = true;
                 } catch (err) {
                     errorDisplayed = "PROXY ERROR, SWITCHING PROXY...";
