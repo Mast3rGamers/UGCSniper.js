@@ -146,16 +146,23 @@ function sleep(time) {
     }
     var productId;
     currentTask = "Sniping item...";
+    var sleepTime = 0;
+    var gotProxyToken = false;
+    if (config.proxyEnabled) {
+        sleepTime = 50;
+    } else {
+        sleepTime = 326;
+    }
     while (true) {
         try {
-            if (config.proxyEnabled) {
+            if (config.proxyEnabled && !gotProxyToken) {
                 try {
                     const proxyToken = await helpers.getXCSRFToken(config.cookie, currentProxy)
                     token = proxyToken;
+                    gotProxyToken = true;
                 } catch (err) {
                     errorDisplayed = "PROXY ERROR, SWITCHING PROXY...";
                     switchProxy();
-                    errorDisplayed = "";
                 }
             }
             var itemDetails = await helpers.getItemDetails(config.cookie, token, itemId, config.proxyEnabled ? currentProxy : "");
@@ -169,7 +176,8 @@ function sleep(time) {
                 }
                 break;
             }
-            sleep(60);
+            sleep(sleepTime);
+            errorDisplayed = "";
         } catch(err) {
             if (err.statusCode = 429) {
                 totalRatelimits += 1;
