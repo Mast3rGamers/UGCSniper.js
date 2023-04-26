@@ -1,5 +1,6 @@
 const request = require("request-promise");
 const uuid = require("uuid");
+const proxyAgent = require("proxy-agent");
 
 module.exports = {
     //User details helpers.
@@ -26,10 +27,11 @@ module.exports = {
     },
     getXCSRFToken: function(cookie, proxy) {
         if (!cookie) return;
+        var agentOptions = "";
         var options = {
             uri: "https://auth.roblox.com/v2/logout",
             method: "POST",
-            proxy: "",
+            agent: "",
             timeout: 200,
             headers: {
                 "Referer": "https://www.roblox.com",
@@ -38,7 +40,8 @@ module.exports = {
             resolveWithFullResponse: true
         }
         if (proxy) {
-            options.proxy = `http://${proxy}`;
+            agentOptions = `http://${proxy}`;
+            options.agent = new proxyAgent(agentOptions);
         }
         return new Promise((resolve, reject)=>{
             request(options)
@@ -55,11 +58,12 @@ module.exports = {
     //Item data helpers.
     getItemDetails: function(cookie, xToken, assetId, proxy) {
         if (!cookie || !xToken || !assetId) return;
+        var agentOptions = "";
         var options = {
             uri: "https://catalog.roblox.com/v1/catalog/items/details",
             method: "POST",
             json: true,
-            proxy: "",
+            agent: "",
             timeout: 200,
             headers: {
                 "x-csrf-token": xToken,
@@ -75,7 +79,8 @@ module.exports = {
             }
         }
         if (proxy) {
-            options.proxy = `http://${proxy}`;
+            agentOptions = `http://${proxy}`;
+            options.agent = new proxyAgent(agentOptions);
         }
         return new Promise((resolve, reject)=>{
             request(options)
@@ -89,12 +94,13 @@ module.exports = {
     },
     getProductId: function(cookie, xToken, collectibleItemId, proxy) {
         if (!cookie || !xToken || !collectibleItemId) return;
+        var agentOptions = "";
         var options;
         options = {
             uri: "https://apis.roblox.com/marketplace-items/v1/items/details",
             method: "POST",
             json: true,
-            proxy: "",
+            agent: "",
             timeout: 650,
             headers: {
                 "x-csrf-token": xToken,
@@ -105,7 +111,8 @@ module.exports = {
             }
         }
         if (proxy) {
-            options.proxy = `http://${proxy}`;
+            agentOptions = `http://${proxy}`;
+            options.agent = new proxyAgent(agentOptions);
         }
         return new Promise((resolve, reject)=>{
             request(options)
@@ -120,6 +127,7 @@ module.exports = {
     //Purchase helper.
     buyItem: function(cookie, xToken, userId, creatorId, itemId, productId, proxy) {
         if (!cookie || !xToken || !userId || !creatorId || !itemId || !productId) return;
+        var agentOptions = "";
         var options;
         var data = {
             "collectibleItemId": itemId,
@@ -136,7 +144,7 @@ module.exports = {
             uri: `https://apis.roblox.com/marketplace-sales/v1/item/${itemId}/purchase-item`,
             method: "POST",
             json: true,
-            proxy: "",
+            agent: "",
             headers: {
                 "x-csrf-token": xToken,
                 "Cookie": `.ROBLOSECURITY=${cookie}`
@@ -144,37 +152,8 @@ module.exports = {
             body: data
         }
         if (proxy) {
-            options.proxy = `http://${proxy}`;
-        }
-        return new Promise((resolve, reject)=>{
-            request(options)
-            .then((res)=>{
-                resolve(res);
-            })
-            .catch((err)=>{
-                reject(err);
-            })
-        })
-    },
-    buyItemFromEconomy: function(cookie, xToken, productId, creatorId, proxy) {
-        if (!cookie || !xToken || !productId || !creatorId) return;
-        var options = {
-            uri: `https://economy.roblox.com/v1/purchases/products/${productId}`,
-            method: "POST",
-            json: true,
-            proxy: "",
-            headers: {
-                "x-csrf-token": xToken,
-                "Cookie": `.ROBLOSECURITY=${cookie}`
-                },
-                body: {
-                "expectedCurrency":1,
-                "expectedPrice":0,
-                "expectedSellerId":creatorId
-            }
-        }
-        if (proxy) {
-            options.proxy = `http://${proxy}`;
+            agentOptions = `http://${proxy}`;
+            options.agent = new proxyAgent(agentOptions);
         }
         return new Promise((resolve, reject)=>{
             request(options)
