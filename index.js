@@ -206,14 +206,15 @@ function sleep(time) {
     }
     while (productId) {
         try {
-            if (config.proxyEnabled) {
+            if (config.proxyEnabled && !gotProxyToken) {
                 try {
                     const proxyToken = await helpers.getXCSRFToken(config.cookie, currentProxy)
                     token = proxyToken;
+                    gotProxyToken = true;
                 } catch (err) {
                     errorDisplayed = "PROXY ERROR, SWITCHING PROXY...";
+                    gotProxyToken = false;
                     switchProxy();
-                    errorDisplayed = "";
                 }
             }
             const buyResponse = await helpers.buyItem(config.cookie, token, userId, itemDetails[0].creatorTargetId, itemDetails[0].collectibleItemId, productId, config.proxyEnabled ? currentProxy : "");
@@ -232,6 +233,7 @@ function sleep(time) {
             if (err.statusCode == 429) {
                 totalRatelimits += 1;
                 if (config.proxyEnabled) {
+                    gotProxyToken = false;
                     switchProxy();
                 }
                 return;
@@ -241,6 +243,7 @@ function sleep(time) {
                 return;
             }
             if (config.proxyEnabled) {
+                gotProxyToken = false;
                 switchProxy();
             }
         }
