@@ -89,13 +89,18 @@ function sleep(time) {
         return;
     }
     if (config.proxyEnabled) {
-        if (!fs.existsSync("proxies.txt")) {
-            console.log("There isnt proxies.txt file.");
-            return;
-        }
-        if (!fs.readFileSync("proxies.txt", "utf-8").trim()) {
-            console.log("There isnt any proxy inside the proxy list.");
-            return;
+        switch(true) {
+            case !fs.existsSync("proxies.txt"):
+                console.log("There isnt proxies.txt file.");
+                process.exit();
+            case !config.proxyType:
+                console.log("No proxy type defined, cannot proceed.");
+                process.exit();
+            case !fs.readFileSync("proxies.txt", "utf-8").trim():
+                console.log("There isnt any proxy inside the proxy list.");
+                process.exit();
+            default:
+                break;
         }
         const checkProxy = readline.question("Do you want to check proxies? (Yes/No): ");
         switch (checkProxy.toLocaleLowerCase()) {
