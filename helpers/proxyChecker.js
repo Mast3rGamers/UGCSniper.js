@@ -11,8 +11,8 @@ function doRequest(proxy) {
     request({
         uri: "http://example.com",
         method: "GET",
-        timeout: 120,
-        agent: new ProxyAgent(`http://${proxy}`)
+        timeout: 360,
+        agent: new ProxyAgent(`${config.proxyType}://${proxy}`)
     })
     .then((res)=>{
         if (res.includes("<h1>Example Domain</h1>")) {
