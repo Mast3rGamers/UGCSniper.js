@@ -2,6 +2,8 @@ const request = require("request-promise");
 const uuid = require("uuid");
 const proxyAgent = require("proxy-agent");
 
+const config = require("../config.json");
+
 module.exports = {
     //User details helpers.
     fetchUserInfo: function(cookie) {
@@ -32,7 +34,7 @@ module.exports = {
             uri: "https://auth.roblox.com/v2/logout",
             method: "POST",
             agent: "",
-            timeout: 200,
+            timeout: 0,
             headers: {
                 "Referer": "https://www.roblox.com",
                 "Cookie": `.ROBLOSECURITY=${cookie}`
@@ -40,8 +42,10 @@ module.exports = {
             resolveWithFullResponse: true
         }
         if (proxy) {
-            agentOptions = `http://${proxy}`;
+            agentOptions = `${config.proxyType}://${proxy}`;
             options.agent = new proxyAgent(agentOptions);
+            options.agent.timeout = 400;
+            options.timeout = 400;
         }
         return new Promise((resolve, reject)=>{
             request(options)
@@ -64,7 +68,7 @@ module.exports = {
             method: "POST",
             json: true,
             agent: "",
-            timeout: 200,
+            timeout: 0,
             headers: {
                 "x-csrf-token": xToken,
                 "Cookie": `.ROBLOSECURITY=${cookie}`
@@ -79,8 +83,10 @@ module.exports = {
             }
         }
         if (proxy) {
-            agentOptions = `http://${proxy}`;
+            agentOptions = `${config.proxyType}://${proxy}`;
             options.agent = new proxyAgent(agentOptions);
+            options.agent.timeout = 400;
+            options.timeout = 400;
         }
         return new Promise((resolve, reject)=>{
             request(options)
@@ -101,7 +107,7 @@ module.exports = {
             method: "POST",
             json: true,
             agent: "",
-            timeout: 650,
+            timeout: 0,
             headers: {
                 "x-csrf-token": xToken,
                 "Cookie": `.ROBLOSECURITY=${cookie}`
@@ -111,8 +117,10 @@ module.exports = {
             }
         }
         if (proxy) {
-            agentOptions = `http://${proxy}`;
+            agentOptions = `${config.proxyType}://${proxy}`;
             options.agent = new proxyAgent(agentOptions);
+            options.agent.timeout = 400;
+            options.timeout = 400;
         }
         return new Promise((resolve, reject)=>{
             request(options)
@@ -152,8 +160,9 @@ module.exports = {
             body: data
         }
         if (proxy) {
-            agentOptions = `http://${proxy}`;
+            agentOptions = `${config.proxyType}://${proxy}`;
             options.agent = new proxyAgent(agentOptions);
+            options.agent.timeout = 400;
         }
         return new Promise((resolve, reject)=>{
             request(options)
