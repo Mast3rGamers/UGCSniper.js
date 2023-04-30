@@ -1,5 +1,6 @@
 {
     "cookie": "YOUR COOKIE GOES HERE",
     "itemId": "ITEM ID GOES HERE",
-    "proxyEnabled": true
+    "proxyEnabled": false,
+    "proxyType": "PROXY TYPE GOES HERE (http, https, socks4, socks5)"
 }
