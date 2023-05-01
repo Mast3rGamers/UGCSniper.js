@@ -252,7 +252,7 @@ function sleep(time) {
                     gotProxyToken = false;
                     switchProxy();
                 }
-                return;
+                sleep(40);
             }
             if (err.statusCode == 403) {
                 errorDisplayed = "PURCHASE FAILED.";
