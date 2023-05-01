@@ -82,7 +82,8 @@ function sleep(time) {
 }
 
 (async()=>{
-    process.title = "-Roblox Limited Sniper- / Created by *MasterGamers*"
+    process.title = "-Roblox Limited Sniper- / Created by *MasterGamers*";
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
     console.log("Roblox Item Sniper V2\nCreated by MasterGamers.");
     if (!config.cookie) {
         console.log("There isnt a cookie inside the config, cannot proceed.");
