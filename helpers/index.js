@@ -44,8 +44,8 @@ module.exports = {
         if (proxy) {
             agentOptions = `${config.proxyType}://${proxy}`;
             options.agent = new proxyAgent(agentOptions);
-            options.agent.timeout = 400;
-            options.timeout = 400;
+            options.agent.timeout = 1000;
+            options.timeout = 1000;
         }
         return new Promise((resolve, reject)=>{
             request(options)
@@ -85,8 +85,8 @@ module.exports = {
         if (proxy) {
             agentOptions = `${config.proxyType}://${proxy}`;
             options.agent = new proxyAgent(agentOptions);
-            options.agent.timeout = 400;
-            options.timeout = 400;
+            options.agent.timeout = 1000;
+            options.timeout = 1000;
         }
         return new Promise((resolve, reject)=>{
             request(options)
@@ -119,8 +119,8 @@ module.exports = {
         if (proxy) {
             agentOptions = `${config.proxyType}://${proxy}`;
             options.agent = new proxyAgent(agentOptions);
-            options.agent.timeout = 400;
-            options.timeout = 400;
+            options.agent.timeout = 1000;
+            options.timeout = 1000;
         }
         return new Promise((resolve, reject)=>{
             request(options)
@@ -153,6 +153,7 @@ module.exports = {
             method: "POST",
             json: true,
             agent: "",
+            timeout: 0,
             headers: {
                 "x-csrf-token": xToken,
                 "Cookie": `.ROBLOSECURITY=${cookie}`
@@ -162,7 +163,8 @@ module.exports = {
         if (proxy) {
             agentOptions = `${config.proxyType}://${proxy}`;
             options.agent = new proxyAgent(agentOptions);
-            options.agent.timeout = 400;
+            options.agent.timeout = 1000;
+            options.timeout = 1000;
         }
         return new Promise((resolve, reject)=>{
             request(options)
