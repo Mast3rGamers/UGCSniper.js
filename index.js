@@ -39,7 +39,11 @@ var asciiArt = `\n\n
 function startInterval() {
     infoInterval = setInterval(()=>{
         console.clear();
-        console.log(gradient("#99754f","#c8b6a3")(asciiArt));
+        if (config.basicMode) {
+            console.log(gradient("#99754f","#c8b6a3")("\n\n==UGCSniper.js=="));
+        } else {
+            console.log(gradient("#99754f","#c8b6a3")(asciiArt));
+        }
         console.log(chalk.hex("c8b6a3")("  -------"));
         console.log(chalk.hex("99754f")("  Program  :  ") + chalk.hex("c8b6a3")("MasterGamers#8449"));
         console.log(chalk.hex("99754f")("  Theme    :  ") + chalk.hex("c8b6a3")("doot#0002"));
