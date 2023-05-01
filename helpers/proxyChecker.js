@@ -3,6 +3,7 @@ const path = require("path");
 const ProxyAgent = require("proxy-agent");
 const request = require("request-promise");
 
+const config = require("../config.json");
 const proxyList = fs.readFileSync(path.join(__dirname, "..", "/proxies.txt"), "utf8").split("\r\n");
 
 var proxies;
