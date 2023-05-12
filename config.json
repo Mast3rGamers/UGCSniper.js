@@ -1,7 +1,8 @@
 {
     "basicMode": false,
-    "cookie": "YOUR COOKIE GOES HERE",
-    "itemId": "ITEM ID GOES HERE",
+    "autoSearcherMode": false,
     "proxyEnabled": false,
     "proxyType": "PROXY TYPE GOES HERE (http, https, socks4, socks5)"
+    "cookie": "YOUR COOKIE GOES HERE",
+    "itemId": "ITEM ID GOES HERE",
 }
