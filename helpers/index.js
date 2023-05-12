@@ -59,6 +59,33 @@ module.exports = {
             })
         })
     },
+    getCurrentLimiteds: function(cookie, token, proxy) {
+        if (!cookie || !token) return;
+        var options = {
+            uri: "https://catalog.roblox.com/v1/search/items/details?category=1&includeNotForSale=false&maxPrice=0&limit=30&salesTypeFilter=2&sortType=3",
+            method: "GET",
+            json: true,
+            agent: "",
+            headers: {
+                "x-csrf-token": token,
+                "Cookie": `.ROBLOSECURITY=${cookie}`
+            }
+        }
+        if (proxy) {
+            options.agent = new proxyAgent(`${config.proxyType}://${proxy}`);
+            options.agent.timeout = 1000;
+            options.timeout = 1000;
+        }
+        return new Promise((resolve, reject)=>{
+            request(options)
+            .then((res)=>{
+                resolve(res);
+            })
+            .catch((err)=>{
+                reject(err);
+            })
+        })
+    },
     //Item data helpers.
     getItemDetails: function(cookie, xToken, assetId, proxy) {
         if (!cookie || !xToken || !assetId) return;
