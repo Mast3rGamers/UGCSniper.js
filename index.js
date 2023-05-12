@@ -11,6 +11,8 @@ var userId;
 var username;
 var token;
 
+var sleepTime = config.proxyEnabled ? 50 : 284;
+
 var proxyPool;
 var currentIndex = 0;
 var totalIndex = 0;
@@ -136,11 +138,6 @@ function sleep(time) {
         return;
     }
     currentStatus = `Logged in as ${username} || ID: ${userId}.`;
-    const itemId = config.itemId;
-    if (!itemId) {
-        errorDisplayed = "There isnt a itemId to snipe, cannot proceed.";
-        return;
-    }
     currentTask = "Getting X-CSRF-TOKEN...";
     await getToken();
     async function getToken() {
@@ -157,15 +154,54 @@ function sleep(time) {
             }
         }
     }
+    if (config.autoSearcherMode) {
+        currentTask = "Searching for limiteds...";
+        process.title += " || AUTO SEARCHER MODE";
+        while (true) {
+            try {
+                const currentLimiteds = await helpers.getCurrentLimiteds(config.cookie, token, config.proxyEnabled ? currentProxy : "");
+                for (let item in currentLimiteds.data) {
+                    const { name, unitsAvailableForConsumption, creatorTargetId, collectibleItemId } = currentLimiteds.data[item];
+                    if (unitsAvailableForConsumption > 0) {
+                        currentTask = `Attempting Purchase of ${name}...`;
+                        const limitedProductId = await helpers.getProductId(config.cookie, token, collectibleItemId, config.proxyEnabled ? currentProxy : "");
+                        const buyResult = await helpers.buyItem(config.cookie, token, userId, creatorTargetId, collectibleItemId, limitedProductId, config.proxyEnabled ? currentProxy : "");
+                        if (buyResult.purchased) {
+                            totalBuys += 1;
+                        }
+                        if (buyResult.purchaseResult == "Flooded") {
+                            errorDisplayed = "BOUGHT THE MAX AMOUNT.";
+                        }
+                        if (buyResult.errorMessage == "QuantityExhausted") {
+                            errorDisplayed = `ITEM ${name} OUT OF STOCK`;
+                        }
+                    }
+                }
+                currentChecks += 1;
+            } catch(err) {
+                if (err.statusCode == 429) {
+                    totalRatelimits += 1;
+                    if (config.proxyEnabled) {
+                        switchProxy();
+                    }
+                    sleep(sleepTime);
+                } else {
+                    if (config.proxyEnabled) {
+                        switchProxy();
+                    }
+                }
+            }
+            sleep(sleepTime);
+        }
+    }
+    const itemId = config.itemId;
+    if (!itemId) {
+        errorDisplayed = "There isnt a itemId to snipe, cannot proceed.";
+        return;
+    }
     var productId;
     currentTask = "Sniping item...";
-    var sleepTime = 0;
     var gotProxyToken = false;
-    if (config.proxyEnabled) {
-        sleepTime = 50;
-    } else {
-        sleepTime = 326;
-    }
     while (true) {
         try {
             if (config.proxyEnabled && !gotProxyToken) {
@@ -202,8 +238,7 @@ function sleep(time) {
                     switchProxy();
                 }
                 sleep(sleepTime);
-            }
-            if (err.statusCode == 403 && err.error.message == "Token Verification Failed") {
+            } else if (err.statusCode == 403 && err.error.message == "Token Verification Failed") {
                 errorDisplayed = "TOKEN EXPIRED, GETTING NEW TOKEN...";
                 helpers.getXCSRFToken(config.cookie, config.proxyEnabled ? currentProxy : "").then((newToken)=>{
                     token = newToken;
@@ -215,9 +250,11 @@ function sleep(time) {
                     console.log(err);
                     process.exit();
                 })
-            }
-            if (config.proxyEnabled) {
+            } else {
+              if (config.proxyEnabled) {
                 switchProxy();
+                gotProxyToken = false;
+              }
             }
         }
     }
@@ -256,15 +293,13 @@ function sleep(time) {
                     gotProxyToken = false;
                     switchProxy();
                 }
-                sleep(40);
-            }
-            if (err.statusCode == 403) {
+            } else if (err.statusCode == 403) {
                 errorDisplayed = "PURCHASE FAILED.";
-                return;
-            }
-            if (config.proxyEnabled) {
+            } else {
+              if (config.proxyEnabled) {
                 gotProxyToken = false;
                 switchProxy();
+              }
             }
         }
     }
