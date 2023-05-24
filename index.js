@@ -63,7 +63,6 @@ function startInterval() {
         console.log(chalk.hex("99754f")("  Task    :  ") + chalk.hex("c8b6a3")(currentTask));
         console.log(chalk.hex("99754f")("  ERROR   :  ") + chalk.hex("cc0000")(errorDisplayed));
         console.log(chalk.hex("c8b6a3")("  -------"));
-        sleep(0);
     }, 350);
 }
 
